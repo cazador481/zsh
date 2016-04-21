@@ -1,7 +1,3 @@
-# zmodload zsh/datetime
-# setopt promptsubst
-# PS4='+EPOCHREALTIME %N:%i'
-# setopt xtrace prompt_subst
 autoload -U compinit
 compinit 
 function path_remove {
@@ -18,16 +14,13 @@ export PATH=$cleanpath
 }
 
 function path_append ()  {
-path_remove $1
-export PATH=$PATH:$1
+    path+=$1
 }
 
 function path_prepend {
-path_remove $1
-export PATH=$1:$PATH
+    path=($1 $path)
 }
-
-export HISTFILE=~/.histfile
+export HISTFILE=$XDG_CACHE_HOME/zsh/histfile
 export HISTSIZE=1000
 export SAVEHIST=1000
 export MANPAGER=less
@@ -76,7 +69,7 @@ if ! zgen saved; then
 
     # antigen theme gnzh
     #TODO make match non dev version
-    zgen load $HOME/.zsh/custom/gitster.zsh-theme
+    # zgen load $HOME/.zsh/custom/gitster.zsh-theme
 
     zgen save
 fi
@@ -88,14 +81,11 @@ fpath=( /home/eash/.zsh/completion/ $fpath )
 
 # User configuration
 
-export PATH=$HOME/bin:/usr/local/bin:$PATH
+path=($HOME/bin /usr/local/bin $PATH)
 setopt prompt_subst
-
 
 setopt shwordsplit
 
-
-#source $HOME/.homesick/repos/homeshick/homeshick.sh
 # source $HOME/.zsh/functions.zsh
 source $HOME/.zsh/aliases.zsh
 
@@ -145,48 +135,22 @@ bindkey -M emacs '^N' history-substring-search-down
 bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 
-# function resolve-alias
-# {
-#     typeset -a cmd
-#     cmd=(${(z)1})
-#     while (( ${+aliases[$cmd[1]]} )) \
-#         && [[ ${aliases[$cmd[1]]} != $cmd ]]; do
-#     cmd=(${(z)aliases[${cmd[1]}]})
-# done
-# echo $cmd
-#   }
-#   ## http://www.zsh.org/mla/users/2010/msg00769.html                                                                                                                       
-#   function rationalise-dot() {                                                                                                                                             
-#   local MATCH # keep the regex match from leaking to the environment                                                                                                   
-#
-#   if [[ $LBUFFER =~ '(^|/| |  |'$'\n''|\||;|&)\.\.$' ]] \
-#       && ! [[ $(resolve-alias $LBUFFER) =~ '^(git|tig|p4)' ]]; then
-#   LBUFFER+=/
-#   zle self-insert
-#   zle self-insert
-# else
-#     zle self-insert
-# fi
-#
-# }                                                                                                                                                                        
-# zle -N rationalise-dot                                                                                                                                                   
-# bindkey . rationalise-dot                                                                                                                                                
-# bindkey -M isearch . self-insert                                                                                                                                         
-#
+
 unsetopt xtrace
-LINUX_BREW_PATH=`readlink -e /home/scratch.eash/.linuxbrew/bin`
-export PATH="$LINUX_BREW_PATH:$PATH"
+# LINUX_BREW_PATH=`/usr/bin/readlink -e $HOME/.linuxbrew/bin`
+# export PATH="$LINUX_BREW_PATH:$PATH"
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 s=`hostname -d`
 a=("${(s/./)s}")
 export DOMAIN=$a[1];
 if [ $DOMAIN = 'nvidia' ]; then
     echo "sourcing nvidia"
-    source $HOME/.zsh/nvidia.zsh
+    source $ZDOTDIR/nvidia.zsh
     echo "end sourcing nvidia"
 fi
 if [ -e $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh ]; then
     source $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh
     alias man=nman
 fi
+if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 eval "$(fasd --init auto)"
