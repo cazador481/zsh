@@ -1,7 +1,7 @@
 autoload -U compinit
+
 compinit 
 function path_remove {
-
 setopt autopushd
 cleanpath=$(echo $PATH |
 tr ':' '\n' |
@@ -20,7 +20,17 @@ function path_append ()  {
 function path_prepend {
     path=($1 $path)
 }
+
+
+#set XDG directories
 export HISTFILE=$XDG_CACHE_HOME/zsh/histfile
+export PERL_CPANM_HOME=$XDG_CACHE_HOME/cpanm #cpanm
+export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
+
+
+
+
+
 export HISTSIZE=1000
 export SAVEHIST=1000
 export MANPAGER=less
@@ -69,7 +79,7 @@ if ! zgen saved; then
 
     # antigen theme gnzh
     #TODO make match non dev version
-    # zgen load $HOME/.zsh/custom/gitster.zsh-theme
+    zgen load $ZDOTDIR/gitster.zsh-theme
 
     zgen save
 fi
@@ -112,8 +122,7 @@ done
 
 
 
-#  zstyle ':vcs_info:*' enable git p4
-#  zstyle ':vcs_info:*' use-server true 
+zstyle ':vcs_info:*' enable git
 # RPROMPT='${vcs_info_msg_0_}%# '
 #
 # bind UP and DOWN arrow keys
@@ -153,4 +162,9 @@ if [ -e $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh ]; then
     alias man=nman
 fi
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+unset P4CLIENT
 eval "$(fasd --init auto)"
+if [ -z "$TMUX" ]; then
+    # Create a new session if it doesn't exist
+    # tmux attach -d || tmux new
+fi
