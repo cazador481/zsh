@@ -1,3 +1,6 @@
+function shopt () {} #needed to be able to load up nvidia's .bash_profile
+function setenv () {export $1=$2} # make setenv like tcsh
+# source ~/.bash_profile
 autoload -U compinit
 
 compinit 
@@ -76,6 +79,7 @@ if ! zgen saved; then
     zgen load zsh-users/zsh-syntax-highlighting
     zgen load zsh-users/zsh-completions
     zgen load zsh-users/zsh-history-substring-search
+    zgen load Tarrasch/zsh-autoenv
 
     # antigen theme gnzh
     #TODO make match non dev version
@@ -97,7 +101,7 @@ setopt prompt_subst
 setopt shwordsplit
 
 # source $HOME/.zsh/functions.zsh
-source $HOME/.zsh/aliases.zsh
+source $ZDOTDIR/aliases.zsh
 
 source $HOME/perl5/perlbrew/etc/bashrc >&/dev/null
 
@@ -168,3 +172,6 @@ if [ -z "$TMUX" ]; then
     # Create a new session if it doesn't exist
     # tmux attach -d || tmux new
 fi
+
+
+
