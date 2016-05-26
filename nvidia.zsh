@@ -12,7 +12,6 @@ alias -- fmman='man -M ${FM_ROOT}/doc/fm/man'
 alias -- synman='man -M $SYNOPSYS/doc/syn/man'
 export MANPATH='/usr/local/lsf/man:/home/utils/man:/usr/man:/home/eash/man:/usr/share/man:/home/tools/synopsys/syn_2010.12-SP5/doc/syn/man:/home/tools/synopsys/pt_2009.06-SP3/doc/syn/man:/home/xl_98/tools.sun4/man/man1:/home/xl_98/tools.sun4/man/man5'
 #}}}
-alias perltidy='/home/utils/perl-5.16/5.16.2-nothreads-64/bin/perltidy'
 
 alias pwd='pwd -P'
 
@@ -27,28 +26,15 @@ rm_client ()
     p4 client -d $1 
 }
 
-#module load ruby
-#module load tmux
-#module load vim
-
-path=(/home/utils/ruby-2.2.2/bin
+path=(
+/home/nv/utils/crucible/1.0/bin/p4
+/home/utils/ruby-2.2.2/bin
 /home/nv/utils/hwmeth/bin
 /home/nv/utils/quasar/bin
 /home/utils/Python-3.4.2/bin
 /home/utils/xclip-0.11/bin
 $path
 )
-# path_prepend /home/utils/Python-3.4.2/bin
-# path_prepend  /home/utils/xclip-0.11/bin
-#
-# PATH="/home/utils/ruby-2.2.2/bin:$PATH";
-# PATH="$HOME/usr/local/bin:$PATH"
-# PATH+=':/home/nv/utils/hwmeth/bin:/home/nv/utils/quasar/bin'
-# PATH='/home/utils/xdg-utils-1.0.2/bin
-# path_prepend /home/utils/Python-3.4.2/bin
-# path_prepend  /home/utils/xclip-0.11/bin
-# path_remove /home/gnu/bin
-# source ~/perl5/perlbrew/etc/bashrc
 
 #{{{perlforce w/ crucible wrapper 
 function p4() {
@@ -105,20 +91,17 @@ tot() {cd `depth_ea`}
 unset SSH_ASKPASS
 # compdef _gnu_generic automate_any.pl
 
-#p4 completion
+#p4 completion #{{{
+zstyle ':vcs_info:*' enable git git-p4 p4
+zstyle ':vcs_info:p4*:*' use-server 1;
 zstyle ':completion:*:p4-*:changes' changes -u $USER
 zstyle ':completion:*:p4-add:*:all-files' all-files
+#}}}
 
 alias dzil='PERL5LIB=`/home/eash/scripts/perlcustomlib` dzil'
 
 alias hwmeth="cd ~/scratch/script_dev/dev/inf/hwmeth/mainline"
 alias quasar="cd ~/scratch/script_dev/dev/inf/quasar/mainline"
-
-
-#alias vim="vim -X" # no x connections
-
-export SSL_CERT_FILE="$HOME/usr/local/etc/openssl/ca-cert.pem"
-# vim: set fdm=marker:
 
 # {{{Brew env 
 export HOMEBREW_CACHE='/tmp/homebrew_eash'
@@ -127,23 +110,25 @@ export HOMEBREW_CACHE='/tmp/homebrew_eash'
 
 if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
-# source $HOME/scripts/hub-linux-386-2.2.1/etc/hub.zsh_completion
-
-#flexclone eval alias
-function make_flexclone()
+#flexclone eval alias #{{{
+function make_flexclone() #{{{
 {
     ssh build-test@fclone-test-svm "volume clone create -flexclone $1 -type RW -parent-volume build_master_test -junction-active true -foreground true -space-guarantee none -junction-path /vol/buildclone/$1"
-}
+} #}}}
 
-function delete_flexclone
+function delete_flexclone #{{{
 {
     ssh build-test@fclone-test-svm "volume unmount $1"
     ssh build-test@fclone-test-svm "volume offline $1"
     ssh build-test@fclone-test-svm "volume delete $1"
-}
+} #}}}
+#}}}
+
 export PIP_CERT='/home/eash/DigiCertHighAssuranceEVRootCA.crt'
-path_prepend /home/eash/scripts
-LINUX_BREW_PATH=`/usr/bin/readlink -e $XDG_DATA_HOME/linuxbrew/$REDHAT_RELEASE/bin`
-PATH="$LINUX_BREW_PATH:$PATH"
-export PATH
+export SSL_CERT_FILE=$HOME/cacert.pem
+path=($HOME/scripts $PATH)
+LINUX_BREW_PATH=`/usr/bin/readlink -e $XDG_DATA_HOME/linuxbrew/$REDHAT_RELEASE/`
+path=($LINUX_BREW_PATH/bin $path)
+export MANPATH="$LINUX_BREW_PATH/bin:$MANPATH"
+# export PATH
 # vim: set fdm=marker:
