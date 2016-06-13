@@ -1,6 +1,7 @@
 #allows use of modules  https://wiki.nvidia.com/engit/index.php/UnixSupport-Environment_Management:Modules
 # time to complete.
-#source /home/utils/modules-tcl/init/zsh
+# source /home/utils/modules-tcl/init/zsh
+source /home/utils/modules-3.2.6/Modules/3.2.6/init/zsh
 unalias which 2&> /dev/null #remove the which alias that is an nvidia alias
 export EDITOR="nvim"
 
