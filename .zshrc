@@ -1,9 +1,7 @@
 function shopt () {} #needed to be able to load up nvidia's .bash_profile
 function setenv () {export $1=$2} # make setenv like tcsh
 # source ~/.bash_profile
-autoload -U compinit
 
-compinit 
 function path_remove {
 setopt autopushd
 cleanpath=$(echo $PATH |
@@ -50,47 +48,45 @@ setopt auto_pushd
 
 bindkey -v # vim bindings
 
-# Uncomment the following line to display red dots whilst waiting for completion.
-COMPLETION_WAITING_DOTS="true"
+path+=($HOME/.linuxbrew/bin)
+### Added by Zplugin's installer
+source '/home/eash/.config/zsh/.zplugin/bin/zplugin.zsh'
+autoload -Uz compinit
+compinit
+### End of Zplugin's installer chunk
 
-
-# Uncomment the following line if you want to disable marking untracked files
-# under VCS as dirty. This makes repository status check for large repositories
-# much, much faster.
-DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-GENCOMPL_FPATH=$HOME/.zsh/completion # zsh-competion-generator path
-
-source ~/.zgen/zgen.zsh
 #check if there's no init script
-if ! zgen saved; then
+# if ! zgen saved; then
     echo "Creating a zgen save"
     # zgen oh-my-zsh
-    zgen oh-my-zsh lib/git.zsh
-    zgen oh-my-zsh lib/completion.zsh
-    zgen oh-my-zsh plugins/brew
-    zgen oh-my-zsh plugins/brew
-    zgen oh-my-zsh plugins/git
-    zgen oh-my-zsh plugins/cpanm
-    zgen oh-my-zsh plugins/extract
-    zgen oh-my-zsh plugins/vi-mode
+    zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/git.zsh'
+    # zgen oh-my-zsh lib/git.zsh
+    zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/completion.zsh'
+    # zgen oh-my-zsh lib/completion.zsh
+    # zgen oh-my-zsh plugins/brew
+    # zplugin load  robbyrussell/oh-my-zsh/plugins/brew
+    # zgen oh-my-zsh plugins/git
+    # zgen oh-my-zsh plugins/cpanm
+    # zgen oh-my-zsh plugins/extract
+    # zgen oh-my-zsh plugins/vi-mode
     # zgen oh-my-zsh plugins/mosh
-    zgen load RobSis/zsh-completion-generator
-    zgen load zsh-users/zsh-syntax-highlighting
-    zgen load zsh-users/zsh-completions
-    zgen load zsh-users/zsh-history-substring-search
-    zgen load Tarrasch/zsh-autoenv
+    # zplugin load RobSis/zsh-completion-generator
+    zplugin load zsh-users/zsh-syntax-highlighting
+    zplugin load zsh-users zsh-completions
+    zplugin load zsh-users/zsh-history-substring-search
+    zplugin load Tarrasch/zsh-autoenv
 
     # antigen theme gnzh
     #TODO make match non dev version
-    zgen load $ZDOTDIR/gitster.zsh-theme
+    # zgen load $ZDOTDIR/gitster.zsh-theme
 
-    zgen save
-fi
+    # zgen save
+# fi
 # ZSH_CUSTOM=$HOME/.zsh/plugins/
 
 fpath=( /home/eash/.zsh/completion/ $fpath )
 
+zplugin cdreplay 
 
 
 # User configuration
@@ -172,6 +168,8 @@ if [ -z "$TMUX" ]; then
     # Create a new session if it doesn't exist
     # tmux attach -d || tmux new
 fi
+
+
 
 
 
