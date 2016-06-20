@@ -38,6 +38,7 @@ path=(
 /home/utils/Python-3.4.2/bin
 /home/utils/xclip-0.11/bin
 /home/utils/bin/
+/home/autosubmit/bin
 $path
 )
 
