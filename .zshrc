@@ -57,7 +57,7 @@ compinit
 
 #check if there's no init script
 # if ! zgen saved; then
-    echo "Creating a zgen save"
+    # echo "Creating a zgen save"
     # zgen oh-my-zsh
     zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/git.zsh'
     # zgen oh-my-zsh lib/git.zsh
@@ -73,7 +73,7 @@ compinit
     # zplugin load RobSis/zsh-completion-generator
     zplugin load zsh-users/zsh-syntax-highlighting
     zplugin load zsh-users zsh-completions
-    zplugin load zsh-users/zsh-history-substring-search
+    zplugin load zsh-users/zsh-history-substring-search.git
     zplugin load Tarrasch/zsh-autoenv
 
     # antigen theme gnzh
