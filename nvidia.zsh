@@ -28,6 +28,7 @@ rm_client ()
 }
 
 path=(
+/home/nv/bin
 /home/nv/utils/crucible/1.0/bin/p4
 /home/utils/ruby-2.2.2/bin
 /home/nv/utils/hwmeth/bin

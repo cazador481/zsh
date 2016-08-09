@@ -1,3 +1,9 @@
+#exports DOMAIN
+
+s=`hostname -d`
+a=("${(s/./)s}")
+export DOMAIN=$a[1];
+
 function shopt () {} #needed to be able to load up nvidia's .bash_profile
 function setenv () {export $1=$2} # make setenv like tcsh
 # source ~/.bash_profile
@@ -25,6 +31,7 @@ function path_prepend {
 
 #set XDG directories
 export HISTFILE=$XDG_CACHE_HOME/zsh/histfile
+mkdir -p $XDG_CACHE_HOME/zsh # TODO  make conditional
 export PERL_CPANM_HOME=$XDG_CACHE_HOME/cpanm #cpanm
 export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
@@ -72,9 +79,13 @@ compinit
     # zgen oh-my-zsh plugins/mosh
     # zplugin load RobSis/zsh-completion-generator
     zplugin load zsh-users/zsh-syntax-highlighting
-    zplugin load zsh-users zsh-completions
+    zplugin load zsh-users zsh-completions/src
     zplugin load zsh-users/zsh-history-substring-search.git
     zplugin load Tarrasch/zsh-autoenv
+    # if [ $DOMAIN = 'nvidia' ]; then
+    #     zplugin snippet $ZDOTDIR/nvidia.zsh
+    #     echo "end sourcing nvidia"
+    # fi
 
     # antigen theme gnzh
     #TODO make match non dev version
@@ -149,9 +160,6 @@ unsetopt xtrace
 # LINUX_BREW_PATH=`/usr/bin/readlink -e $HOME/.linuxbrew/bin`
 # export PATH="$LINUX_BREW_PATH:$PATH"
 export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-s=`hostname -d`
-a=("${(s/./)s}")
-export DOMAIN=$a[1];
 if [ $DOMAIN = 'nvidia' ]; then
     echo "sourcing nvidia"
     source $ZDOTDIR/nvidia.zsh
@@ -168,8 +176,3 @@ if [ -z "$TMUX" ]; then
     # Create a new session if it doesn't exist
     # tmux attach -d || tmux new
 fi
-
-
-
-
-
