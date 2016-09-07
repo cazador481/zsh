@@ -1,11 +1,11 @@
 #allows use of modules  https://wiki.nvidia.com/engit/index.php/UnixSupport-Environment_Management:Modules
 # time to complete.
 # source /home/utils/modules-tcl/init/zsh
-source /home/utils/modules-3.2.6/Modules/3.2.6/init/zsh
+#source /home/utils/modules-3.2.6/Modules/3.2.6/init/zsh
 unalias which 2&> /dev/null #remove the which alias that is an nvidia alias
 export EDITOR="nvim"
 
-REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
+#REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
 
 
 #{{{ man pages shortcutes & settings
@@ -28,6 +28,8 @@ rm_client ()
 }
 
 path=(
+.
+/usr/local/lsf/bin
 /home/nv/bin
 /home/nv/utils/crucible/1.0/bin/p4
 /home/utils/ruby-2.2.2/bin
@@ -35,8 +37,12 @@ path=(
 /home/nv/utils/quasar/bin
 /home/utils/Python-3.4.2/bin
 /home/utils/xclip-0.11/bin
+/home/utils/bin/
 $path
 )
+
+export LSF_SERVERDIR=/usr/local/lsf/etc
+
 
 #{{{perlforce w/ crucible wrapper 
 function p4() {
@@ -110,7 +116,7 @@ export HOMEBREW_CACHE='/tmp/homebrew_eash'
 # }}}
 # export PYENV_ROOT=/home/eash/.linuxbrew/var/pyenv
 
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+#if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 #flexclone eval alias #{{{
 function make_flexclone() #{{{
@@ -128,9 +134,10 @@ function delete_flexclone #{{{
 
 export PIP_CERT='/home/eash/DigiCertHighAssuranceEVRootCA.crt'
 export SSL_CERT_FILE=$HOME/cacert.pem
-path=($HOME/scripts $PATH)
-LINUX_BREW_PATH=`/usr/bin/readlink -e $XDG_DATA_HOME/linuxbrew/$REDHAT_RELEASE/`
-path=($LINUX_BREW_PATH/bin $path)
+#path=($HOME/scripts $PATH)
+#LINUX_BREW_PATH=$HOME/.linuxbrew/bin
+# LINUX_BREW_PATH=`/usr/bin/readlink -e $XDG_DATA_HOME/linuxbrew/$REDHAT_RELEASE/`
+# path=($LINUX_BREW_PATH/bin $path)
 export MANPATH="$LINUX_BREW_PATH/bin:$MANPATH"
 # export PATH
 # vim: set fdm=marker:
