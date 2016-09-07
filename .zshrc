@@ -1,5 +1,5 @@
 #exports DOMAIN
-
+typeset -U path
 s=`hostname -d`
 a=("${(s/./)s}")
 export DOMAIN=$a[1];
@@ -76,6 +76,7 @@ compinit
     # zgen oh-my-zsh plugins/cpanm
     # zgen oh-my-zsh plugins/extract
     # zgen oh-my-zsh plugins/vi-mode
+    zplugin snippet 'https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/vi-mode/vi-mode.plugin.zsh'
     # zgen oh-my-zsh plugins/mosh
     # zplugin load RobSis/zsh-completion-generator
     zplugin load zsh-users/zsh-syntax-highlighting
@@ -90,6 +91,7 @@ compinit
     # antigen theme gnzh
     #TODO make match non dev version
     # zgen load $ZDOTDIR/gitster.zsh-theme
+#    zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
 
     # zgen save
 # fi
@@ -158,8 +160,8 @@ bindkey -M vicmd 'j' history-substring-search-down
 
 unsetopt xtrace
 # LINUX_BREW_PATH=`/usr/bin/readlink -e $HOME/.linuxbrew/bin`
-# export PATH="$LINUX_BREW_PATH:$PATH"
-export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+#export PATH="$LINUX_BREW_PATH:$PATH"
+#export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
 if [ $DOMAIN = 'nvidia' ]; then
     echo "sourcing nvidia"
     source $ZDOTDIR/nvidia.zsh
@@ -169,10 +171,15 @@ if [ -e $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh ]; then
     source $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh
     alias man=nman
 fi
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
+#if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 unset P4CLIENT
-eval "$(fasd --init auto)"
+if hash fasd 2>/dev/null; then
+    echo 'loading fasd'
+    eval "$(fasd --init auto)"
+fi
 if [ -z "$TMUX" ]; then
     # Create a new session if it doesn't exist
     # tmux attach -d || tmux new
 fi
+path+=($HOME/.linuxbrew/bin)
+path=($HOME/scripts $path)
