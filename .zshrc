@@ -7,9 +7,7 @@ export DOMAIN=$a[1];
 function shopt () {} #needed to be able to load up nvidia's .bash_profile
 function setenv () {export $1=$2} # make setenv like tcsh
 # source ~/.bash_profile
-
 function path_remove {
-setopt autopushd
 cleanpath=$(echo $PATH |
 tr ':' '\n' |
 awk '{a[$0]++;if (a[$0]==1){b[max+1]=$0;max++}}END{for (x = 1; x <= max; x++) { print b[x] } }' |
@@ -50,6 +48,7 @@ setopt extended_glob nomatch
 #cd opts
 setopt autocd
 setopt auto_pushd
+setopt autopushd
 
 
 
@@ -177,9 +176,16 @@ if hash fasd 2>/dev/null; then
     echo 'loading fasd'
     eval "$(fasd --init auto)"
 fi
-if [ -z "$TMUX" ]; then
-    # Create a new session if it doesn't exist
-    # tmux attach -d || tmux new
-fi
+
+#help
+autoload -Uz run-help
+autoload -Uz run-help-git
+autoload -Uz run-help-svn
+autoload -Uz run-help-svk
+unalias run-help
+alias help=run-help
+
+
+eval "$(fasd --init auto)"
 path+=($HOME/.linuxbrew/bin)
 path=($HOME/scripts $path)
