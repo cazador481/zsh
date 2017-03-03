@@ -16,3 +16,6 @@ alias -s pm=$EDITOR
 #git aliases
 alias root='cd $(git rev-parse --show-cdup || echo ".")'
 alias -- tmux='tmux -2'
+function nv_ccolab () {
+    p4 shelve -rc $2 && ccollab --no-browser addchangelist $1 $2
+}

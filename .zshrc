@@ -79,7 +79,7 @@ compinit
     # zgen oh-my-zsh plugins/mosh
     # zplugin load RobSis/zsh-completion-generator
     zplugin load zsh-users/zsh-syntax-highlighting
-    zplugin load zsh-users zsh-completions/src
+    #zplugin load zsh-users zsh-completions/src
     zplugin load zsh-users/zsh-history-substring-search.git
     zplugin load Tarrasch/zsh-autoenv
     # if [ $DOMAIN = 'nvidia' ]; then
@@ -112,6 +112,7 @@ setopt shwordsplit
 source $ZDOTDIR/aliases.zsh
 
 source $HOME/perl5/perlbrew/etc/bashrc >&/dev/null
+export PERLBREW_ROOT=/home/utils/perl5/perlbrew
 
 
 precmd() {
