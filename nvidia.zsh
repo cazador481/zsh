@@ -37,9 +37,12 @@ path=(
 /home/nv/utils/quasar/bin
 /home/utils/Python-3.4.2/bin
 /home/utils/xclip-0.11/bin
+/home/utils/bash-4.3/bin
+/home/utils/gawk-4.1.0/bin
 /home/utils/bin/
 /home/autosubmit/bin
 $path
+/home/utils/the_silver_searcher-0.32.0/bin
 )
 
 export LSF_SERVERDIR=/usr/local/lsf/etc
@@ -53,27 +56,42 @@ cmd=/home/nv/utils/crucible/1.0/bin/p4
 if [[ $1 == "sync" ]]
 then 
     shift argv # remove the sync  command
-    cmd="$cmd -q sync"
+    cmd="$cmd -q sync "
     # if [[ $1 != "-k" ]]
     # then
     #     cmd="$cmd --parallel=threads=10"
     # fi
+elif [[ $1 == "restore" ]]
+then
+    cmd="p4 unshelve -s $2 -c $2"
+    $cmd
+    return
 elif [[ $1 == "commit" ]]
 then
     shift argv # remove the sync  command
     cmd="$cmd submit"
+elif [[ $1 == "ss" ]] # submit shelve
+then
+    p4 shelve -d -c $2 && p4 submit -c $2
+    return
+elif [[ $1 == "ds" ]] #deletes shelve and changelist
+then
+    p4 shelve -d -c $2 && p4 changelist -d $2 
+    return
+elif [[ $1 == "move" ]]
+then 
+    p4 integrate $2 $3 && p4 delete $2;
+    return
 elif [[ $1 == "flush" ]]
 then
+    shift argv
     cmd="$cmd -q"
 fi
-#echo Executing: $cmd $@
-$cmd $@
+echo Executing: $cmd "$@"
+command $cmd "$@"
 }
-# alias -- p4='/home/nv/utils/crucible/1.0/bin/p4 -d `/bin/pwd`'
-alias -- p4_diff='p4_xdiff -d'
-alias -- p4_log='p4_filelog'
-#}}}
 
+#}}}
 export P4PORT='p4hw:2001'
 export P4CONFIG='.p4config'
 export P4DIFF='nvim -d'

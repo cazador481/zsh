@@ -2,3 +2,7 @@
 .zcompdump.*
 .zcompcache/
 *.zwc
+.zplugin/
+mini_env/
+mini_env_new/
+test/

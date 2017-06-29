@@ -19,3 +19,8 @@ alias -- tmux='tmux -2'
 function nv_ccolab () {
     p4 shelve -rc $2 && ccollab --no-browser addchangelist $1 $2
 }
+
+
+alias c='clear'
+alias td='todo.sh'
+compdef td='todo.sh'

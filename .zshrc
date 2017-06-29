@@ -190,3 +190,5 @@ alias help=run-help
 eval "$(fasd --init auto)"
 path+=($HOME/.linuxbrew/bin)
 path=($HOME/scripts $path)
+
+export FZF_DEFAULT_COMMAND='ag -g ""'
