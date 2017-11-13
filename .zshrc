@@ -34,9 +34,6 @@ export PERL_CPANM_HOME=$XDG_CACHE_HOME/cpanm #cpanm
 export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
 
-
-
-
 export HISTSIZE=1000
 export SAVEHIST=1000
 export MANPAGER=less
@@ -55,8 +52,12 @@ setopt autopushd
 bindkey -v # vim bindings
 
 path+=($HOME/.linuxbrew/bin)
+path+=($HOME/.linuxbrew/sbin)
 ### Added by Zplugin's installer
-source '/home/eash/.config/zsh/.zplugin/bin/zplugin.zsh'
+typeset -A ZPLGM
+ZPLGM[HOME_DIR]="$ZDOTDIR/zplugin"
+ZPLGM[BIN_DIR]="$ZDOTDIR/zplugin/bin"
+source '/home/eash/.config/zsh/zplugin/bin/zplugin.zsh'
 autoload -Uz compinit
 compinit
 ### End of Zplugin's installer chunk
@@ -79,13 +80,15 @@ compinit
     # zgen oh-my-zsh plugins/mosh
     # zplugin load RobSis/zsh-completion-generator
     zplugin load zsh-users/zsh-syntax-highlighting
-    #zplugin load zsh-users zsh-completions/src
+    zplugin load zsh-users zsh-completions/src
     zplugin load zsh-users/zsh-history-substring-search.git
-    zplugin load Tarrasch/zsh-autoenv
-    # if [ $DOMAIN = 'nvidia' ]; then
-    #     zplugin snippet $ZDOTDIR/nvidia.zsh
-    #     echo "end sourcing nvidia"
-    # fi
+    # zplugin load Tarrasch/zsh-autoenv
+    if [ $DOMAIN = 'nvidia' ]; then
+        zplugin load nvidia
+        echo "end sourcing nvidia"
+    fi
+    zplugin snippet "OMZ::plugins/pyenv/pyenv.plugin.zsh"
+    zplugin snippet "OMZ::plugins/fasd/fasd.plugin.zsh"
 
     # antigen theme gnzh
     #TODO make match non dev version
@@ -124,15 +127,6 @@ precmd() {
     fi;
 }
 
-parts=(${(s:.:)HOST})
-for i in {${#parts}..1}; do
-    profile=${(j:.:)${parts[$i,${#parts}]}}
-    file=$ZSH_CUSTOM/profiles/$profile
-    if [ -f $file ]; then
-        source $file
-    fi
-done
-
 
 
 zstyle ':vcs_info:*' enable git
@@ -159,24 +153,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 
 
 unsetopt xtrace
-# LINUX_BREW_PATH=`/usr/bin/readlink -e $HOME/.linuxbrew/bin`
-#export PATH="$LINUX_BREW_PATH:$PATH"
-#export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
-if [ $DOMAIN = 'nvidia' ]; then
-    echo "sourcing nvidia"
-    source $ZDOTDIR/nvidia.zsh
-    echo "end sourcing nvidia"
-fi
-if [ -e $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh ]; then
-    source $HOME/.config/nvim/bundle/neoman.vim/scripts/neovim.zsh
-    alias man=nman
-fi
-#if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 unset P4CLIENT
-if hash fasd 2>/dev/null; then
-    echo 'loading fasd'
-    eval "$(fasd --init auto)"
-fi
 
 #help
 autoload -Uz run-help
@@ -187,8 +164,8 @@ unalias run-help
 alias help=run-help
 
 
-eval "$(fasd --init auto)"
 path+=($HOME/.linuxbrew/bin)
 path=($HOME/scripts $path)
 
 export FZF_DEFAULT_COMMAND='ag -g ""'
+

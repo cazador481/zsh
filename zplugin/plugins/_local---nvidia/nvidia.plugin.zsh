@@ -4,8 +4,11 @@
 #source /home/utils/modules-3.2.6/Modules/3.2.6/init/zsh
 unalias which 2&> /dev/null #remove the which alias that is an nvidia alias
 export EDITOR="nvim"
+export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
 
-#REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
+
+
+REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
 
 
 #{{{ man pages shortcutes & settings
