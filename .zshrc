@@ -167,5 +167,17 @@ alias help=run-help
 path+=($HOME/.linuxbrew/bin)
 path=($HOME/scripts $path)
 
+zle-keymap-select () {
+    if [ "$TERM" = "xterm-256color" ]; then
+        if [ $KEYMAP = vicmd ]; then
+            # the command mode for vi
+            echo -ne "\e[2 q"
+        else
+            # the insert mode for vi
+            echo -ne "\e[5 q"
+        fi
+    fi
+} 
 export FZF_DEFAULT_COMMAND='ag -g ""'
+
 
