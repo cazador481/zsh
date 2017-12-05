@@ -120,10 +120,14 @@ export PERLBREW_ROOT=/home/utils/perl5/perlbrew
 
 precmd() {
     if [[ -n $TMUX ]]; then
+        if dummy=$(tmux show-environment DISPLAY |grep '-') ; then
+            unset DISPLAY
+        else
+            export `tmux show-environment DISPLAY`;
         for name in `tmux ls -F '#{session_name}'`; do
             tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
         done 
-        export `tmux show-environment DISPLAY`;
+        fi
     fi;
 }
 
