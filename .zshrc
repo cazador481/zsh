@@ -29,7 +29,8 @@ function path_prepend {
 
 #set XDG directories
 export HISTFILE=$XDG_CACHE_HOME/zsh/histfile
-mkdir -p $XDG_CACHE_HOME/zsh # TODO  make conditional
+export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
+mkdir -p $ZSH_CACHE_DIR # TODO  make conditional
 export PERL_CPANM_HOME=$XDG_CACHE_HOME/cpanm #cpanm
 export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
@@ -46,6 +47,8 @@ setopt extended_glob nomatch
 setopt autocd
 setopt auto_pushd
 setopt autopushd
+
+setopt NO_BEEP
 
 
 
@@ -82,12 +85,15 @@ compinit
     zplugin load zsh-users/zsh-syntax-highlighting
     zplugin load zsh-users zsh-completions/src
     zplugin load zsh-users/zsh-history-substring-search.git
+    zplugin snippet ~/.linuxbrew/opt/fzf/shell/key-bindings.zsh
+    zplugin snippet ~/.linuxbrew/opt/fzf/shell/completion.zsh
+
+    zplugin snippet $HOME/.pyenv/completions/pyenv.zsh
     # zplugin load Tarrasch/zsh-autoenv
     if [ $DOMAIN = 'nvidia' ]; then
         zplugin load nvidia
         echo "end sourcing nvidia"
     fi
-    zplugin snippet "OMZ::plugins/pyenv/pyenv.plugin.zsh"
     zplugin snippet "OMZ::plugins/fasd/fasd.plugin.zsh"
 
     # antigen theme gnzh
@@ -134,6 +140,8 @@ precmd() {
 
 
 zstyle ':vcs_info:*' enable git
+zstyle 'completion:*' use-cache on
+zstyle 'completion:*' cache-path $ZSH_CACHE_DIR
 # RPROMPT='${vcs_info_msg_0_}%# '
 #
 # bind UP and DOWN arrow keys
@@ -182,6 +190,30 @@ zle-keymap-select () {
         fi
     fi
 } 
-export FZF_DEFAULT_COMMAND='ag -g ""'
+
+# export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='fd ""'
+
+#{{{ pyenv
+
+path+=($HOME/.pyenv/shims: $path)
+export PYENV_SHELL=zsh
+command pyenv rehash 2>/dev/null
+pyenv() {
+  local command
+  command="$1"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$command" in
+  activate|deactivate|rehash|shell)
+    eval "$(pyenv "sh-$command" "$@")";;
+  *)
+    command pyenv "$command" "$@";;
+  esac
+}
+#}}}
+
 
 
