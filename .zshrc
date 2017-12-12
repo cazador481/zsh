@@ -130,10 +130,16 @@ precmd() {
             unset DISPLAY
         else
             export `tmux show-environment DISPLAY`;
-        for name in `tmux ls -F '#{session_name}'`; do
-            tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
-        done 
+
+            for name in `tmux ls -F '#{session_name}'`; do
+                tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
+            done 
         fi
+
+        eval `tmux showenv -s SSH_CLIENT`
+        for name in `tmux ls -F '#{session_name}'`; do
+                tmux setenv -g -t $name SSH_CLIENT "$SSH_CLIENT" #set display for all sessions
+        done
     fi;
 }
 
@@ -214,6 +220,3 @@ pyenv() {
   esac
 }
 #}}}
-
-
-
