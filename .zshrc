@@ -202,7 +202,7 @@ export FZF_DEFAULT_COMMAND='fd ""'
 
 #{{{ pyenv
 
-path+=($HOME/.pyenv/shims: $path)
+path=($HOME/.pyenv/shims $path)
 export PYENV_SHELL=zsh
 command pyenv rehash 2>/dev/null
 pyenv() {
