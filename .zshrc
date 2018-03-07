@@ -37,7 +37,7 @@ export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
 export HISTSIZE=1000
 export SAVEHIST=1000
-export MANPAGER=less
+export MANPAGER="nvim -c 'set ft=man' -"
 setopt inc_append_history
 setopt share_history
 setopt hist_ignore_all_dups
@@ -121,12 +121,11 @@ setopt shwordsplit
 source $ZDOTDIR/aliases.zsh
 
 source $HOME/perl5/perlbrew/etc/bashrc >&/dev/null
-export PERLBREW_ROOT=/home/utils/perl5/perlbrew
 
 
 precmd() {
     if [[ -n $TMUX ]]; then
-        if dummy=$(tmux show-environment DISPLAY |grep '-') ; then
+        if dummy=$(tmux show-environment DISPLAY 2>/dev/null|grep '-') ; then
             unset DISPLAY
         else
             export `tmux show-environment DISPLAY`;
@@ -136,7 +135,7 @@ precmd() {
             done 
         fi
 
-        eval `tmux showenv -s SSH_CLIENT`
+        eval `tmux showenv -s SSH_CLIENT 2>/dev/null`
         for name in `tmux ls -F '#{session_name}'`; do
                 tmux setenv -g -t $name SSH_CLIENT "$SSH_CLIENT" #set display for all sessions
         done
@@ -178,7 +177,7 @@ autoload -Uz run-help
 autoload -Uz run-help-git
 autoload -Uz run-help-svn
 autoload -Uz run-help-svk
-unalias run-help
+unalias run-help 2>/dev/null
 alias help=run-help
 
 
@@ -202,7 +201,7 @@ export FZF_DEFAULT_COMMAND='fd ""'
 
 #{{{ pyenv
 
-path=($HOME/.pyenv/shims $path)
+path=($HOME/.pyenv/shims $HOME/.local/bin $path)
 export PYENV_SHELL=zsh
 command pyenv rehash 2>/dev/null
 pyenv() {

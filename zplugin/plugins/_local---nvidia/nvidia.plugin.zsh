@@ -4,8 +4,6 @@
 #source /home/utils/modules-3.2.6/Modules/3.2.6/init/zsh
 unalias which 2&> /dev/null #remove the which alias that is an nvidia alias
 export EDITOR="nvim"
-export ZSH_CACHE_DIR="$XDG_CACHE_HOME/zsh"
-
 
 
 REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
@@ -21,6 +19,11 @@ alias pwd='pwd -P'
 
 p4_filelog () { p4 filelog -l $* | more }
 su () { /bin/su $*; tup }
+
+
+export PERLBREW_ROOT=/home/utils/perl5/perlbrew
+
+
 
 rm_client ()
 {
@@ -66,6 +69,54 @@ then
     # then
     #     cmd="$cmd --parallel=threads=10"
     # fi
+elif [[ $1 == "reconcile" || $1 == 'status' || $1 == 'clean' ]]
+then
+    cmd="$cmd $1 -I"
+    if [[ -d $2  ]]
+    then
+        fd --hidden '' $2 | xargs $cmd
+        return
+    elif  [[ -f $2 ]]
+    then
+        $cmd $2
+        return
+    elif [[ $2 ]]
+    then
+        fd --hidden "^$2\$" | xargs $cmd
+        return
+    else
+        fd --hidden `p4_root`|xargs $cmd 
+        return
+    fi
+    return
+# elif [[ $1 == "reconcile" ]] #work around to use .gitignore
+# then
+#     fd --hidden $2 | xargs $cmd reconcile -I
+#     return
+# elif [[ $1 == "status" ]] # work around to use .gitignore
+# then
+#     if [[ -d $2  ]]
+#         then
+#         fd --hidden '' $2 | xargs $cmd status -I
+#         return
+#     elif [[ $2  ]]
+#         then
+#         fd --hidden "^$2\$" | xargs $cmd status -I
+#         return
+#     else
+#         fd --hidden |xargs $cmd status -I
+#         return
+#     fi
+#     return
+# elif [[ $1 == "clean" ]] # work around to use .gitignore
+# then
+#     if [[ $2 ]]
+#     then
+#         fd --hidden "^$2\$" | xargs $cmd clean -I
+#         return
+#     else
+#         fd --hidden | xargs $cmd clean -I
+#     fi
 elif [[ $1 == "restore" ]]
 then
     cmd="p4 unshelve -s $2 -c $2"
@@ -100,6 +151,7 @@ command $cmd "$@"
 export P4PORT='p4hw:2001'
 export P4CONFIG='.p4config'
 export P4DIFF='nvim -d'
+export P4IGNORE='.p4ignore'
 
 
 export MCLIBDIR='/home/tools/synopsys/syn_2010.12-SP5/mc/tech'
@@ -169,4 +221,5 @@ function brew ()
     # PATH=/home/eash/scratch/.linuxbrew/bin:$PATH /home/eash/scratch/.linuxbrew/bin/brew $*
 }
 # export PATH
-# vim: set fdm=marker:
+#
+#vim: set fdm=marker:
