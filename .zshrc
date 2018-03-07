@@ -1,5 +1,5 @@
 #exports DOMAIN
-typeset -U path
+typeset -gU path
 s=`hostname -d`
 a=("${(s/./)s}")
 export DOMAIN=$a[1];
@@ -99,28 +99,28 @@ compinit
     # antigen theme gnzh
     #TODO make match non dev version
     # zgen load $ZDOTDIR/gitster.zsh-theme
-#    zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
+   zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
 
     # zgen save
 # fi
 # ZSH_CUSTOM=$HOME/.zsh/plugins/
 
-fpath=( /home/eash/.zsh/completion/ $fpath )
+# fpath=( /home/eash/.zsh/completion/ $fpath )
 
-zplugin cdreplay 
+# zplugin cdreplay 
 
 
 # User configuration
 
-path=($HOME/bin /usr/local/bin $PATH)
+# path=($HOME/bin /usr/local/bin $PATH)
+path=($HOME/bin /usr/local/bin $path)
+# export PATH=$path
 setopt prompt_subst
 
 setopt shwordsplit
 
 # source $HOME/.zsh/functions.zsh
-source $ZDOTDIR/aliases.zsh
-
-source $HOME/perl5/perlbrew/etc/bashrc >&/dev/null
+# source $ZDOTDIR/aliases.zsh
 
 
 precmd() {
@@ -142,80 +142,81 @@ precmd() {
     fi;
 }
 
-
-
-zstyle ':vcs_info:*' enable git
-zstyle 'completion:*' use-cache on
-zstyle 'completion:*' cache-path $ZSH_CACHE_DIR
-# RPROMPT='${vcs_info_msg_0_}%# '
 #
-# bind UP and DOWN arrow keys
-zmodload zsh/terminfo
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
-
-# bind UP and DOWN arrow keys (compatibility fallback
-# for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
-
 #
-# # bind P and N for EMACS mode
-bindkey -M emacs '^P' history-substring-search-up
-bindkey -M emacs '^N' history-substring-search-down
+# zstyle ':vcs_info:*' enable git
+# zstyle 'completion:*' use-cache on
+# zstyle 'completion:*' cache-path $ZSH_CACHE_DIR
+# # RPROMPT='${vcs_info_msg_0_}%# '
+# #
+# # bind UP and DOWN arrow keys
+# zmodload zsh/terminfo
+# bindkey "$terminfo[kcuu1]" history-substring-search-up
+# bindkey "$terminfo[kcud1]" history-substring-search-down
 #
-# # bind k and j for VI mode
-bindkey -M vicmd 'k' history-substring-search-up
-bindkey -M vicmd 'j' history-substring-search-down
-
-
-unsetopt xtrace
-unset P4CLIENT
-
-#help
-autoload -Uz run-help
-autoload -Uz run-help-git
-autoload -Uz run-help-svn
-autoload -Uz run-help-svk
-unalias run-help 2>/dev/null
-alias help=run-help
-
-
-path+=($HOME/.linuxbrew/bin)
-path=($HOME/scripts $path)
-
-zle-keymap-select () {
-    if [ "$TERM" = "xterm-256color" ]; then
-        if [ $KEYMAP = vicmd ]; then
-            # the command mode for vi
-            echo -ne "\e[2 q"
-        else
-            # the insert mode for vi
-            echo -ne "\e[5 q"
-        fi
-    fi
-} 
-
-# export FZF_DEFAULT_COMMAND='ag -g ""'
-export FZF_DEFAULT_COMMAND='fd ""'
-
-#{{{ pyenv
-
-path=($HOME/.pyenv/shims $HOME/.local/bin $path)
-export PYENV_SHELL=zsh
-command pyenv rehash 2>/dev/null
-pyenv() {
-  local command
-  command="$1"
-  if [ "$#" -gt 0 ]; then
-    shift
-  fi
-
-  case "$command" in
-  activate|deactivate|rehash|shell)
-    eval "$(pyenv "sh-$command" "$@")";;
-  *)
-    command pyenv "$command" "$@";;
-  esac
-}
-#}}}
+# # bind UP and DOWN arrow keys (compatibility fallback
+# # for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
+# bindkey '^[[A' history-substring-search-up
+# bindkey '^[[B' history-substring-search-down
+#
+# #
+# # # bind P and N for EMACS mode
+# bindkey -M emacs '^P' history-substring-search-up
+# bindkey -M emacs '^N' history-substring-search-down
+# #
+# # # bind k and j for VI mode
+# bindkey -M vicmd 'k' history-substring-search-up
+# bindkey -M vicmd 'j' history-substring-search-down
+#
+#
+# unsetopt xtrace
+# unset P4CLIENT
+#
+# #help
+# autoload -Uz run-help
+# autoload -Uz run-help-git
+# autoload -Uz run-help-svn
+# autoload -Uz run-help-svk
+# unalias run-help 2>/dev/null
+# alias help=run-help
+#
+#
+# path+=($HOME/.linuxbrew/bin)
+# path=($HOME/scripts $path)
+#
+# zle-keymap-select () {
+#     if [ "$TERM" = "xterm-256color" ]; then
+#         if [ $KEYMAP = vicmd ]; then
+#             # the command mode for vi
+#             echo -ne "\e[2 q"
+#         else
+#             # the insert mode for vi
+#             echo -ne "\e[5 q"
+#         fi
+#     fi
+# } 
+#
+# # export FZF_DEFAULT_COMMAND='ag -g ""'
+# export FZF_DEFAULT_COMMAND='fd ""'
+#
+# #{{{ pyenv
+#
+# path=($HOME/.pyenv/shims $HOME/.local/bin $path)
+# export PYENV_SHELL=zsh
+# command pyenv rehash 2>/dev/null
+# pyenv() {
+#   local command
+#   command="$1"
+#   if [ "$#" -gt 0 ]; then
+#     shift
+#   fi
+#
+#   case "$command" in
+#   activate|deactivate|rehash|shell)
+#     eval "$(pyenv "sh-$command" "$@")";;
+#   *)
+#     command pyenv "$command" "$@";;
+#   esac
+# }
+# #}}}
+# export PATH
