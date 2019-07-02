@@ -1,8 +1,15 @@
+autoload -U zargs
+
 #exports DOMAIN
 typeset -gU path
-s=`hostname -d`
+# s=`hostname -d`
+s=`domainname| tr '[:upper:]' '[:lower:]'`
 a=("${(s/./)s}")
 export DOMAIN=$a[1];
+
+path=($HOME/.linuxbrew/sbin $path)
+path=($HOME/.linuxbrew/bin $path)
+path=($HOME/scripts $path)
 
 function shopt () {} #needed to be able to load up nvidia's .bash_profile
 function setenv () {export $1=$2} # make setenv like tcsh
@@ -37,11 +44,13 @@ export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
 export HISTSIZE=1000
 export SAVEHIST=1000
+export P4EDITOR="nvr --remote-wait"
 export MANPAGER="nvim -c 'set ft=man' -"
+
 setopt inc_append_history
 setopt share_history
 setopt hist_ignore_all_dups
-setopt bang_hist # enable ! history expanstion
+setopt bang_hist # enable ! history expansion
 setopt extended_glob nomatch
 #cd opts
 setopt autocd
@@ -54,8 +63,6 @@ setopt NO_BEEP
 
 bindkey -v # vim bindings
 
-path+=($HOME/.linuxbrew/bin)
-path+=($HOME/.linuxbrew/sbin)
 ### Added by Zplugin's installer
 typeset -A ZPLGM
 ZPLGM[HOME_DIR]="$ZDOTDIR/zplugin"
@@ -72,6 +79,7 @@ compinit
     zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/git.zsh'
     # zgen oh-my-zsh lib/git.zsh
     zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/completion.zsh'
+
     # zgen oh-my-zsh lib/completion.zsh
     # zgen oh-my-zsh plugins/brew
     # zplugin load  robbyrussell/oh-my-zsh/plugins/brew
@@ -83,7 +91,8 @@ compinit
     # zgen oh-my-zsh plugins/mosh
     # zplugin load RobSis/zsh-completion-generator
     zplugin load zsh-users/zsh-syntax-highlighting
-    zplugin load zsh-users zsh-completions/src
+    zplugin light zsh-users/zsh-autosuggestions
+    zplugin light zsh-users/zsh-completions
     zplugin load zsh-users/zsh-history-substring-search.git
     zplugin snippet ~/.linuxbrew/opt/fzf/shell/key-bindings.zsh
     zplugin snippet ~/.linuxbrew/opt/fzf/shell/completion.zsh
@@ -91,7 +100,7 @@ compinit
     zplugin snippet $HOME/.pyenv/completions/pyenv.zsh
     # zplugin load Tarrasch/zsh-autoenv
     if [ $DOMAIN = 'nvidia' ]; then
-        zplugin load nvidia
+        zplugin load _local/nvidia
         echo "end sourcing nvidia"
     fi
     zplugin snippet "OMZ::plugins/fasd/fasd.plugin.zsh"
@@ -105,9 +114,13 @@ compinit
 # fi
 # ZSH_CUSTOM=$HOME/.zsh/plugins/
 
-# fpath=( /home/eash/.zsh/completion/ $fpath )
+#fpath=( /home/eash/.zsh/completion/ $fpath )
 
-# zplugin cdreplay 
+
+zplugin cdreplay 
+
+# run the following command to add new completions
+# zplugin creinstall %HOME/.zsh/completion
 
 
 # User configuration
@@ -117,106 +130,116 @@ path=($HOME/bin /usr/local/bin $path)
 # export PATH=$path
 setopt prompt_subst
 
+export PROMPT='$(print_prompt.pl)%%'
 setopt shwordsplit
 
 # source $HOME/.zsh/functions.zsh
-# source $ZDOTDIR/aliases.zsh
+source $ZDOTDIR/aliases.zsh
 
 
 precmd() {
     if [[ -n $TMUX ]]; then
-        if dummy=$(tmux show-environment DISPLAY 2>/dev/null|grep '-') ; then
-            unset DISPLAY
-        else
-            export `tmux show-environment DISPLAY`;
-
-            for name in `tmux ls -F '#{session_name}'`; do
-                tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
-            done 
-        fi
-
-        eval `tmux showenv -s SSH_CLIENT 2>/dev/null`
-        for name in `tmux ls -F '#{session_name}'`; do
-                tmux setenv -g -t $name SSH_CLIENT "$SSH_CLIENT" #set display for all sessions
-        done
+        eval `tmux showenv -s`
+        # if dummy=$(tmux show-environment DISPLAY 2>/dev/null|grep '-') ; then
+        #     unset DISPLAY
+        # else
+        #     export `tmux show-environment DISPLAY`;
+        #
+        #     for name in `tmux ls -F '#{session_name}'`; do
+        #         tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
+        #     done 
+        # fi
+        #
+        # eval `tmux showenv -s SSH_CLIENT 2>/dev/null`
+        # for name in `tmux ls -F '#{session_name}'`; do
+        #         tmux setenv -g -t $name SSH_CLIENT "$SSH_CLIENT" #set display for all sessions
+        # done
+        #
+        # eval `tmux showenv -s SSH_CONNECTION 2>/dev/null`
+        # for name in `tmux ls -F '#{session_name}'`; do
+        #         tmux setenv -g -t $name SSH_CONNECTION "$SSH_CONNECTION"
+        # done
     fi;
 }
 
+if [[ -n $TMUX ]]; then
+export NVIM_LISTEN_ADDRESS=/tmp/nvim_eash_`tmux display -p "#{window_id}"`
+
+fi;
+
+#zstyle ':vcs_info:*' enable git
+zstyle 'completion:*' use-cache on
+zstyle 'completion:*' cache-path $ZSH_CACHE_DIR
+# RPROMPT='${vcs_info_msg_0_}%# '
 #
+# bind UP and DOWN arrow keys
+zmodload zsh/terminfo
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+
+# bind UP and DOWN arrow keys (compatibility fallback
+# for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
 #
-# zstyle ':vcs_info:*' enable git
-# zstyle 'completion:*' use-cache on
-# zstyle 'completion:*' cache-path $ZSH_CACHE_DIR
-# # RPROMPT='${vcs_info_msg_0_}%# '
-# #
-# # bind UP and DOWN arrow keys
-# zmodload zsh/terminfo
-# bindkey "$terminfo[kcuu1]" history-substring-search-up
-# bindkey "$terminfo[kcud1]" history-substring-search-down
+# # bind P and N for EMACS mode
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
 #
-# # bind UP and DOWN arrow keys (compatibility fallback
-# # for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
-# bindkey '^[[A' history-substring-search-up
-# bindkey '^[[B' history-substring-search-down
-#
-# #
-# # # bind P and N for EMACS mode
-# bindkey -M emacs '^P' history-substring-search-up
-# bindkey -M emacs '^N' history-substring-search-down
-# #
-# # # bind k and j for VI mode
-# bindkey -M vicmd 'k' history-substring-search-up
-# bindkey -M vicmd 'j' history-substring-search-down
-#
-#
-# unsetopt xtrace
-# unset P4CLIENT
-#
-# #help
-# autoload -Uz run-help
-# autoload -Uz run-help-git
-# autoload -Uz run-help-svn
-# autoload -Uz run-help-svk
-# unalias run-help 2>/dev/null
-# alias help=run-help
-#
-#
-# path+=($HOME/.linuxbrew/bin)
-# path=($HOME/scripts $path)
-#
-# zle-keymap-select () {
-#     if [ "$TERM" = "xterm-256color" ]; then
-#         if [ $KEYMAP = vicmd ]; then
-#             # the command mode for vi
-#             echo -ne "\e[2 q"
-#         else
-#             # the insert mode for vi
-#             echo -ne "\e[5 q"
-#         fi
-#     fi
-# } 
-#
-# # export FZF_DEFAULT_COMMAND='ag -g ""'
-# export FZF_DEFAULT_COMMAND='fd ""'
-#
-# #{{{ pyenv
-#
-# path=($HOME/.pyenv/shims $HOME/.local/bin $path)
-# export PYENV_SHELL=zsh
-# command pyenv rehash 2>/dev/null
-# pyenv() {
-#   local command
-#   command="$1"
-#   if [ "$#" -gt 0 ]; then
-#     shift
-#   fi
-#
-#   case "$command" in
-#   activate|deactivate|rehash|shell)
-#     eval "$(pyenv "sh-$command" "$@")";;
-#   *)
-#     command pyenv "$command" "$@";;
-#   esac
-# }
-# #}}}
-# export PATH
+# # bind k and j for VI mode
+bindkey -M vicmd 'k' history-substring-search-up
+bindkey -M vicmd 'j' history-substring-search-down
+
+
+unsetopt xtrace
+unset P4CLIENT
+
+#help
+autoload -Uz run-help
+autoload -Uz run-help-git
+autoload -Uz run-help-svn
+autoload -Uz run-help-svk
+unalias run-help 2>/dev/null
+alias help=run-help
+
+
+# export FZF_DEFAULT_COMMAND='ag -g ""'
+export FZF_DEFAULT_COMMAND='fd --type file'
+
+#{{{ pyenv
+
+path=($HOME/.pyenv/shims $HOME/.local/bin $path)
+export PYENV_SHELL=zsh
+command pyenv rehash 2>/dev/null
+pyenv() {
+  local command
+  command="$1"
+  if [ "$#" -gt 0 ]; then
+    shift
+  fi
+
+  case "$command" in
+  activate|deactivate|rehash|shell)
+    eval "$(pyenv "sh-$command" "$@")";;
+  *)
+    command pyenv "$command" "$@";;
+  esac
+}
+#}}}
+
+
+#{{{ cursor change
+zle-keymap-select () {
+    if [ "$TERM" = "xterm-256color" ]; then
+        if [ $KEYMAP = vicmd ]; then
+            # the command mode for vi
+            echo -ne "\e[2 q"
+        else
+            # the insert mode for vi
+            echo -ne "\e[5 q"
+        fi
+    fi
+}
+#}}}
+export KEYTIMEOUT=1 # reduces latency when presing esc

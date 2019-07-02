@@ -4,8 +4,10 @@
 #source /home/utils/modules-3.2.6/Modules/3.2.6/init/zsh
 unalias which 2&> /dev/null #remove the which alias that is an nvidia alias
 export EDITOR="nvim"
+unset LESS
 
-
+#disable time reserved word
+disable -r time
 REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
 
 
@@ -23,8 +25,6 @@ su () { /bin/su $*; tup }
 
 export PERLBREW_ROOT=/home/utils/perl5/perlbrew
 
-
-
 rm_client ()
 {
     /home/eash/scripts/unlock_client.pl --client $1
@@ -37,15 +37,13 @@ path=(
 .
 /home/utils/make-4.2.1/bin/
 /usr/local/lsf/bin
-/home/utils/tmux-2.4/bin
+/home/utils/tmux-2.8/bin
 /home/nv/bin
-/home/nv/utils/crucible/1.0/bin/p4
+/home/nv/utils/crucible/1.0/bin
 /home/utils/ruby-2.2.2/bin
 /home/nv/utils/hwmeth/bin
 /home/nv/utils/quasar/bin
 /home/utils/Python-3.4.2/bin
-/home/utils/xclip-0.11/bin
-/home/utils/bash-4.3/bin
 /home/utils/gawk-4.1.0/bin
 /home/utils/bin/
 /home/autosubmit/bin
@@ -85,38 +83,11 @@ then
         fd --hidden "^$2\$" | xargs $cmd
         return
     else
-        fd --hidden `p4_root`|xargs $cmd 
+        p4root=`p4_root`
+        fd --hidden `$p4root` | xargs $cmd 
         return
     fi
     return
-# elif [[ $1 == "reconcile" ]] #work around to use .gitignore
-# then
-#     fd --hidden $2 | xargs $cmd reconcile -I
-#     return
-# elif [[ $1 == "status" ]] # work around to use .gitignore
-# then
-#     if [[ -d $2  ]]
-#         then
-#         fd --hidden '' $2 | xargs $cmd status -I
-#         return
-#     elif [[ $2  ]]
-#         then
-#         fd --hidden "^$2\$" | xargs $cmd status -I
-#         return
-#     else
-#         fd --hidden |xargs $cmd status -I
-#         return
-#     fi
-#     return
-# elif [[ $1 == "clean" ]] # work around to use .gitignore
-# then
-#     if [[ $2 ]]
-#     then
-#         fd --hidden "^$2\$" | xargs $cmd clean -I
-#         return
-#     else
-#         fd --hidden | xargs $cmd clean -I
-#     fi
 elif [[ $1 == "restore" ]]
 then
     cmd="p4 unshelve -s $2 -c $2"
@@ -138,11 +109,13 @@ elif [[ $1 == "move" ]]
 then 
     p4 integrate $2 $3 && p4 delete $2;
     return
-elif [[ $1 == "flush" ]]
-then
+elif [[ $1 == "flush" ]] then
     shift argv
     cmd="$cmd -q"
+elif [[ $1 == "shelved" ]] then
+    cmd="$cmd changes -u $USER -s shelved"
 fi
+
 echo Executing: $cmd "$@"
 command $cmd "$@"
 }
@@ -152,20 +125,12 @@ export P4PORT='p4hw:2001'
 export P4CONFIG='.p4config'
 export P4DIFF='nvim -d'
 export P4IGNORE='.p4ignore'
+export P4EDITOR="nvr --remote-wait -s +'set bufhidden=delete'"
 
 
 export MCLIBDIR='/home/tools/synopsys/syn_2010.12-SP5/mc/tech'
 
-# function vim ()
-# {
-#     nvim
-#     # OLD_PERL=$PERLBREW_PERL 
-#     # OLD_LIB=$PERLBREW_LIB
-#     # perlbrew use 5.16.2-nothreads-64@vim  >&/dev/null
-#     # /home/utils/vim-7.4/bin/vim $*
-#     # perlbrew use $OLD_PERL  >& /dev/null
-# }
-#
+
 #navigate nvidia tree {{{
 d_tests(){ cd `depth_ea`/diag/tests}
 testgen(){ cd `depth_ea`/diag/testgen}
@@ -220,6 +185,7 @@ function brew ()
     PATH=$LINUX_BREW_PATH/bin:/bin:/usr/bin $LINUX_BREW_PATH/bin/brew $*
     # PATH=/home/eash/scratch/.linuxbrew/bin:$PATH /home/eash/scratch/.linuxbrew/bin/brew $*
 }
-# export PATH
+export PATH
 #
 #vim: set fdm=marker:
+
