@@ -85,7 +85,7 @@ zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/complet
 zplugin snippet 'https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/vi-mode/vi-mode.plugin.zsh'
 # zgen oh-my-zsh plugins/mosh
 # zplugin load RobSis/zsh-completion-generator
-zplugin load zsh-users/zsh-syntax-highlighting
+zplugin light zdarma/fast-syntax-highlighting
 zplugin light zsh-users/zsh-autosuggestions
 zplugin light zsh-users/zsh-completions
 zplugin load zsh-users/zsh-history-substring-search.git
@@ -112,11 +112,19 @@ zplugin ice depth=1; zplugin light romkatv/powerlevel10k
 #fpath=( /home/eash/.zsh/completion/ $fpath )
 
 
-zplugin cdreplay 
 
+# turbo mode
+zinit wait lucid for \
+ atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
+    zdharma/fast-syntax-highlighting \
+ blockf \
+    zsh-users/zsh-completions \
+ atload"!_zsh_autosuggest_start" \
+    zsh-users/zsh-autosuggestionsid for \
 # run the following command to add new completions
 # zplugin creinstall %HOME/.zsh/completion
 
+zplugin cdreplay 
 
 # User configuration
 
