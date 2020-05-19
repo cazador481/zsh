@@ -85,12 +85,36 @@ zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/complet
 zplugin snippet 'https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/vi-mode/vi-mode.plugin.zsh'
 # zgen oh-my-zsh plugins/mosh
 # zplugin load RobSis/zsh-completion-generator
-zplugin light zdarma/fast-syntax-highlighting
+# zplugin light zdarma/fast-syntax-highlighting
 zplugin light zsh-users/zsh-autosuggestions
-zplugin light zsh-users/zsh-completions
-zplugin load zsh-users/zsh-history-substring-search.git
-zplugin snippet ~/.linuxbrew/opt/fzf/shell/key-bindings.zsh
-zplugin snippet ~/.linuxbrew/opt/fzf/shell/completion.zsh
+# zplugin light zsh-users/zsh-completions
+zplugin light zsh-users/zsh-history-substring-search
+
+# FZF
+zinit ice lucid wait'0b' from"gh-r" as"program"
+zinit light junegunn/fzf-bin
+# FZF BYNARY AND TMUX HELPER SCRIPT
+zinit ice lucid wait'0c' as"command" pick"bin/fzf-tmux"
+zinit light junegunn/fzf
+# BIND MULTIPLE WIDGETS USING FZF
+zinit ice lucid wait'0c' multisrc"shell/{completion,key-bindings}.zsh" id-as"junegunn/fzf_completions" pick"/dev/null"
+zinit light junegunn/fzf
+# FZF-TAB
+zinit ice wait"1" lucid
+zinit light Aloxaf/fzf-tab
+
+# BAT
+zinit ice from"gh-r" as"program" mv"bat* -> bat" pick"bat/bat" atload"alias cat=bat"
+zinit light sharkdp/bat
+# RIPGREP
+zinit ice from"gh-r" as"program" mv"ripgrep* -> ripgrep" pick"ripgrep/rg"
+zinit light BurntSushi/ripgrep
+# NEOVIM
+zinit ice from"gh-r" as"program" bpick"*appimage*" mv"nvim* -> nvim" pick"nvim"
+zinit light neovim/neovim
+# FD
+zinit ice as"command" from"gh-r" mv"fd* -> fd" pick"fd/fd"
+zinit light sharkdp/fd
 
 if [[ -e ~/.pyenv ]]; then
     zplugin snippet $HOME/.pyenv/completions/pyenv.zsh
@@ -117,10 +141,10 @@ zplugin ice depth=1; zplugin light romkatv/powerlevel10k
 zinit wait lucid for \
  atinit"ZINIT[COMPINIT_OPTS]=-C; zicompinit; zicdreplay" \
     zdharma/fast-syntax-highlighting \
- blockf \
-    zsh-users/zsh-completions \
  atload"!_zsh_autosuggest_start" \
     zsh-users/zsh-autosuggestionsid for \
+ blockf \
+    zsh-users/zsh-completions
 # run the following command to add new completions
 # zplugin creinstall %HOME/.zsh/completion
 
