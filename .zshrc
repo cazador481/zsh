@@ -44,8 +44,10 @@ export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
 export HISTSIZE=100000
 export SAVEHIST=100000
-export P4EDITOR="nvr --remote-wait"
-export MANPAGER="nvim -c 'set ft=man' -"
+# export P4EDITOR="nvr --remote-wait"
+if (($+commands[direnv])); then
+    export MANPAGER="nvim -c 'set ft=man' -"
+fi
 
 setopt inc_append_history
 setopt share_history
@@ -67,52 +69,45 @@ bindkey -v # vim bindings
 typeset -A ZPLGM
 ZPLGM[HOME_DIR]="$ZDOTDIR/zplugin"
 ZPLGM[BIN_DIR]="$ZDOTDIR/zplugin/bin"
-source '/home/eash/.config/zsh/zplugin/bin/zplugin.zsh'
+source "$HOME/.config/zsh/zplugin/bin/zplugin.zsh"
 autoload -Uz compinit
 compinit
-### End of Zplugin's installer chunk
 
-#check if there's no init script
-# if ! zgen saved; then
-    # echo "Creating a zgen save"
-    # zgen oh-my-zsh
-    # zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/git.zsh'
-    # zgen oh-my-zsh lib/git.zsh
-    zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/completion.zsh'
+zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/completion.zsh'
 
-    # zgen oh-my-zsh lib/completion.zsh
-    # zgen oh-my-zsh plugins/brew
-    # zplugin load  robbyrussell/oh-my-zsh/plugins/brew
-    # zgen oh-my-zsh plugins/git
-    # zgen oh-my-zsh plugins/cpanm
-    # zgen oh-my-zsh plugins/extract
-    # zgen oh-my-zsh plugins/vi-mode
-    zplugin snippet 'https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/vi-mode/vi-mode.plugin.zsh'
-    # zgen oh-my-zsh plugins/mosh
-    # zplugin load RobSis/zsh-completion-generator
-    zplugin load zsh-users/zsh-syntax-highlighting
-    zplugin light zsh-users/zsh-autosuggestions
-    zplugin light zsh-users/zsh-completions
-    zplugin load zsh-users/zsh-history-substring-search.git
-    zplugin snippet ~/.linuxbrew/opt/fzf/shell/key-bindings.zsh
-    zplugin snippet ~/.linuxbrew/opt/fzf/shell/completion.zsh
+# zgen oh-my-zsh lib/completion.zsh
+# zgen oh-my-zsh plugins/brew
+# zplugin load  robbyrussell/oh-my-zsh/plugins/brew
+# zgen oh-my-zsh plugins/git
+# zgen oh-my-zsh plugins/cpanm
+# zgen oh-my-zsh plugins/extract
+# zgen oh-my-zsh plugins/vi-mode
+zplugin snippet 'https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/plugins/vi-mode/vi-mode.plugin.zsh'
+# zgen oh-my-zsh plugins/mosh
+# zplugin load RobSis/zsh-completion-generator
+zplugin load zsh-users/zsh-syntax-highlighting
+zplugin light zsh-users/zsh-autosuggestions
+zplugin light zsh-users/zsh-completions
+zplugin load zsh-users/zsh-history-substring-search.git
+zplugin snippet ~/.linuxbrew/opt/fzf/shell/key-bindings.zsh
+zplugin snippet ~/.linuxbrew/opt/fzf/shell/completion.zsh
 
+if [[ -e ~/.pyenv ]]; then
     zplugin snippet $HOME/.pyenv/completions/pyenv.zsh
-    # zplugin load Tarrasch/zsh-autoenv
-    if [ $DOMAIN = 'nvidia' ]; then
-        zplugin load _local/nvidia
-        echo "end sourcing nvidia"
-    fi
+fi
+# zplugin load Tarrasch/zsh-autoenv
+if [ $DOMAIN = 'nvidia' ]; then
+    zplugin load _local/nvidia
+    echo "end sourcing nvidia"
+fi
+if (($+commands[fasd])); then
     zplugin snippet "OMZ::plugins/fasd/fasd.plugin.zsh"
+fi
 
-    # antigen theme gnzh
-    #TODO make match non dev version
-    # zgen load $ZDOTDIR/gitster.zsh-theme
-   # zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
-  zplugin ice depth=1; zplugin light romkatv/powerlevel10k
-    # zgen save
-# fi
-# ZSH_CUSTOM=$HOME/.zsh/plugins/
+# antigen theme gnzh
+#TODO make match non dev version
+# zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
+zplugin ice depth=1; zplugin light romkatv/powerlevel10k
 
 #fpath=( /home/eash/.zsh/completion/ $fpath )
 
@@ -127,13 +122,11 @@ zplugin cdreplay
 
 # path=($HOME/bin /usr/local/bin $PATH)
 path=($HOME/bin /usr/local/bin $path)
-# export PATH=$path
 setopt prompt_subst
 
 export PROMPT='$(print_prompt.pl)%%'
 setopt shwordsplit
 
-# source $HOME/.zsh/functions.zsh
 source $ZDOTDIR/aliases.zsh
 
 
@@ -145,8 +138,7 @@ precmd() {
 }
 
 if [[ -n $TMUX ]]; then
-export NVIM_LISTEN_ADDRESS=/tmp/nvim_eash_`tmux display -p "#{window_id}"`
-
+    export NVIM_LISTEN_ADDRESS=/tmp/nvim_eash_`tmux display -p "#{window_id}"`
 fi;
 
 #zstyle ':vcs_info:*' enable git
@@ -186,8 +178,10 @@ unalias run-help 2>/dev/null
 alias help=run-help
 
 
+if (($+commands[fd])); then
 # export FZF_DEFAULT_COMMAND='ag -g ""'
-export FZF_DEFAULT_COMMAND='fd --type file'
+    export FZF_DEFAULT_COMMAND='fd --type file'
+fi
 
 #{{{ pyenv
 
