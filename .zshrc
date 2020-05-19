@@ -42,8 +42,8 @@ export PERL_CPANM_HOME=$XDG_CACHE_HOME/cpanm #cpanm
 export ELINKS_CONFDIR=$XDG_CONFIG_HOME/elinks #elinks
 
 
-export HISTSIZE=1000
-export SAVEHIST=1000
+export HISTSIZE=100000
+export SAVEHIST=100000
 export P4EDITOR="nvr --remote-wait"
 export MANPAGER="nvim -c 'set ft=man' -"
 
@@ -76,7 +76,7 @@ compinit
 # if ! zgen saved; then
     # echo "Creating a zgen save"
     # zgen oh-my-zsh
-    zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/git.zsh'
+    # zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/git.zsh'
     # zgen oh-my-zsh lib/git.zsh
     zplugin snippet 'http://github.com/robbyrussell/oh-my-zsh/raw/master/lib/completion.zsh'
 
@@ -108,8 +108,8 @@ compinit
     # antigen theme gnzh
     #TODO make match non dev version
     # zgen load $ZDOTDIR/gitster.zsh-theme
-   zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
-
+   # zplugin snippet  $HOME/perl5/perlbrew/etc/bashrc 
+  zplugin ice depth=1; zplugin light romkatv/powerlevel10k
     # zgen save
 # fi
 # ZSH_CUSTOM=$HOME/.zsh/plugins/
@@ -140,25 +140,7 @@ source $ZDOTDIR/aliases.zsh
 precmd() {
     if [[ -n $TMUX ]]; then
         eval `tmux showenv -s`
-        # if dummy=$(tmux show-environment DISPLAY 2>/dev/null|grep '-') ; then
-        #     unset DISPLAY
-        # else
-        #     export `tmux show-environment DISPLAY`;
-        #
-        #     for name in `tmux ls -F '#{session_name}'`; do
-        #         tmux setenv -g -t $name DISPLAY $DISPLAY #set display for all sessions
-        #     done 
-        # fi
-        #
-        # eval `tmux showenv -s SSH_CLIENT 2>/dev/null`
-        # for name in `tmux ls -F '#{session_name}'`; do
-        #         tmux setenv -g -t $name SSH_CLIENT "$SSH_CLIENT" #set display for all sessions
-        # done
-        #
-        # eval `tmux showenv -s SSH_CONNECTION 2>/dev/null`
-        # for name in `tmux ls -F '#{session_name}'`; do
-        #         tmux setenv -g -t $name SSH_CONNECTION "$SSH_CONNECTION"
-        # done
+        unset SSH_ASKPASS
     fi;
 }
 
@@ -243,3 +225,10 @@ zle-keymap-select () {
 }
 #}}}
 export KEYTIMEOUT=1 # reduces latency when presing esc
+
+#{{{ poetry
+path=($HOME/.poetry/bin $path)
+#}}}
+
+#To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+[[ ! -f ~/.config/zsh/.p10k.zsh ]] || source ~/.config/zsh/.p10k.zsh

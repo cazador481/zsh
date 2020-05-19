@@ -1,8 +1,12 @@
-alias ls='ls --color=auto -h'
+#alias ls='ls --color=auto -h'
+alias ls='lsd -h --group-dirs=first'
 alias grep='grep --color=auto'
 alias dir='ls -lA'
 alias dirs="dirs -v"
 alias dc='cd'
+alias tree="lsd --tree"
+
+alias top="htop"
 
 alias -- vnc_setup='vncserver -geometry 5012x960 -randr 5012x980,3840x1080,1280x1024,1680x1050,1920x1200,1040x1050'
 alias s_zsh='zgen reset;source $ZDOTDIR/.zshrc'
@@ -15,6 +19,7 @@ alias -s vs=$EDITOP
 alias -s log=$EDITOR
 alias -s out=$EDITOR
 alias -s pm=$EDITOR
+alias -s .feature=make
 
 #git aliases
 alias root='cd `~/scripts/get_root.pl`'
@@ -94,4 +99,9 @@ p4 -c $1 -q edit -k //...
 p4 -c $1 -q reopen //...
 p4 -c $1 -q revert -k //...
 p4 client -d $1
+}
+
+function tw(){
+    echo "$@"
+    TZ=US/Eastern timew "$@"
 }

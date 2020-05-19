@@ -6,18 +6,22 @@ unalias which 2&> /dev/null #remove the which alias that is an nvidia alias
 export EDITOR="nvim"
 unset LESS
 
+# unset LANG
+
 #disable time reserved word
 disable -r time
 REDHAT_RELEASE=`cut -d ' ' -f 3 /etc/redhat-release`
 
 
+# libaries needed so that microsoft python library server will work with Centos 6
+#function nvim() {
+#     LD_LIBRARY_PATH=/home/utils/gcc-9.2.0/lib64:/home/eash/opt/glibc-2.14/lib:/home/eash/usr/local/lib/icu nvim $*
+# }
 #{{{ man pages shortcutes & settings
 alias -- fmman='man -M ${FM_ROOT}/doc/fm/man'
 alias -- synman='man -M $SYNOPSYS/doc/syn/man'
 export MANPATH='/usr/local/lsf/man:/home/utils/man:/usr/man:/home/eash/man:/usr/share/man:/home/tools/synopsys/syn_2010.12-SP5/doc/syn/man:/home/tools/synopsys/pt_2009.06-SP3/doc/syn/man:/home/xl_98/tools.sun4/man/man1:/home/xl_98/tools.sun4/man/man5'
 #}}}
-
-alias pwd='pwd -P'
 
 p4_filelog () { p4 filelog -l $* | more }
 su () { /bin/su $*; tup }
@@ -43,7 +47,7 @@ path=(
 /home/utils/ruby-2.2.2/bin
 /home/nv/utils/hwmeth/bin
 /home/nv/utils/quasar/bin
-/home/utils/Python-3.4.2/bin
+/home/utils/Python-3.7.3/bin
 /home/utils/gawk-4.1.0/bin
 /home/utils/bin/
 /home/autosubmit/bin
@@ -57,7 +61,7 @@ export LSF_SERVERDIR=/usr/local/lsf/etc
 #{{{perlforce w/ crucible wrapper 
 function p4() {
 PERL5LIB=''
-cmd=/home/nv/utils/crucible/1.0/bin/p4
+cmd=/home/nv/utils/crucible/beta/2018.2.001/bin/p4
 
 if [[ $1 == "sync" ]]
 then 
@@ -67,27 +71,27 @@ then
     # then
     #     cmd="$cmd --parallel=threads=10"
     # fi
-elif [[ $1 == "reconcile" || $1 == 'status' || $1 == 'clean' ]]
-then
-    cmd="$cmd $1 -I"
-    if [[ -d $2  ]]
-    then
-        fd --hidden '' $2 | xargs $cmd
-        return
-    elif  [[ -f $2 ]]
-    then
-        $cmd $2
-        return
-    elif [[ $2 ]]
-    then
-        fd --hidden "^$2\$" | xargs $cmd
-        return
-    else
-        p4root=`p4_root`
-        fd --hidden `$p4root` | xargs $cmd 
-        return
-    fi
-    return
+# elif [[ $1 == "reconcile" || $1 == 'status' || $1 == 'clean' ]]
+# then
+#     cmd="$cmd $1 -I"
+#     if [[ -d $2  ]]
+#     then
+#         fd --hidden '' $2 | xargs $cmd
+#         return
+#     elif  [[ -f $2 ]]
+#     then
+#         $cmd $2
+#         return
+#     elif [[ $2 ]]
+#     then
+#         fd --hidden "^$2\$" | xargs $cmd
+#         return
+#     else
+#         p4root=`p4_root`
+#         fd --hidden `$p4root` | xargs $cmd 
+#         return
+#     fi
+#     return
 elif [[ $1 == "restore" ]]
 then
     cmd="p4 unshelve -s $2 -c $2"
@@ -125,7 +129,7 @@ export P4PORT='p4hw:2001'
 export P4CONFIG='.p4config'
 export P4DIFF='nvim -d'
 export P4IGNORE='.p4ignore'
-export P4EDITOR="nvr --remote-wait -s +'set bufhidden=delete'"
+# export P4EDITOR="nvr --remote-wait -s +'set bufhidden=delete'"
 
 
 export MCLIBDIR='/home/tools/synopsys/syn_2010.12-SP5/mc/tech'
@@ -147,7 +151,7 @@ zstyle ':completion:*:p4-*:changes' changes -u $USER
 zstyle ':completion:*:p4-add:*:all-files' all-files
 #}}}
 
-alias dzil='PERL5LIB=`/home/eash/scripts/perlcustomlib` dzil'
+# alias dzil='PERL5LIB=`/home/eash/scripts/perlcustomlib` dzil'
 
 alias hwmeth="cd ~/scratch/script_dev/dev/inf/hwmeth/mainline"
 alias quasar="cd ~/scratch/script_dev/dev/inf/quasar/mainline"
@@ -173,8 +177,8 @@ function delete_flexclone #{{{
 } #}}}
 #}}}
 
-export PIP_CERT='/home/eash/DigiCertHighAssuranceEVRootCA.crt'
-export SSL_CERT_FILE=$HOME/cacert.pem
+# export PIP_CERT='/home/eash/DigiCertHighAssuranceEVRootCA.crt'
+#export SSL_CERT_FILE=$HOME/cacert.pem
 #path=($HOME/scripts $PATH)
 LINUX_BREW_PATH=$HOME/.linuxbrew
 # LINUX_BREW_PATH=`/usr/bin/readlink -e $XDG_DATA_HOME/linuxbrew/$REDHAT_RELEASE/`
